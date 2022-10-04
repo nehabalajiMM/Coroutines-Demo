@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -15,9 +16,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         GlobalScope.launch {
-            Log.d(tag, "Coroutine says hello from thread ${Thread.currentThread().name}")
+            val networkCallAnswer = doNetworkCall()
+            val networkCallAnswer2 = doNetworkCall2()
+            Log.d(tag, networkCallAnswer)
+            Log.d(tag, networkCallAnswer2)
         }
+    }
 
-        Log.d(tag, "Hello from main thread")
+    suspend fun doNetworkCall(): String {
+        delay(3000L)
+        return "This is the answer"
+    }
+
+    suspend fun doNetworkCall2(): String {
+        delay(3000L)
+        return "This is the answer"
     }
 }
