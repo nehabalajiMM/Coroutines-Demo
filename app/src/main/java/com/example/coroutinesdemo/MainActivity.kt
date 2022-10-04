@@ -17,13 +17,23 @@ class MainActivity : AppCompatActivity() {
 
         val textView = findViewById<TextView>(R.id.textView)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val networkCallAnswer = doNetworkCall()
-            withContext(Dispatchers.Main) {
-                textView.text = networkCallAnswer
+        Log.d(tag, "Before runblocking")
+        runBlocking {
+            launch(Dispatchers.IO) {
+                delay(3000L)
+                Log.d(tag, "Finished IO coroutine 1")
             }
+            launch(Dispatchers.IO) {
+                delay(3000L)
+                Log.d(tag, "Finished IO coroutine 2")
+            }
+            Log.d(tag, "start of runblocking")
+            delay(5000L)
+            Log.d(tag, "End of runblocking")
         }
+        Log.d(tag, "After runblocking")
     }
+
 
     suspend fun doNetworkCall(): String {
         delay(3000L)
