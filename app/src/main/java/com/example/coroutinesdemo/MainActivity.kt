@@ -18,25 +18,28 @@ class MainActivity : AppCompatActivity() {
         val textView = findViewById<TextView>(R.id.textView)
 
         Log.d(tag, "Before runblocking")
-        runBlocking {
-            launch(Dispatchers.IO) {
-                delay(3000L)
-                Log.d(tag, "Finished IO coroutine 1")
+        val job = GlobalScope.launch(Dispatchers.Default) {
+            Log.d(tag, "Starting long running calculation")
+            withTimeout(2000L) {
+                for (i in 30..42) {
+                    if (isActive) {
+                        Log.d(tag, "Result for i = $i: ${fib(i)}")
+                    }
+                }
             }
-            launch(Dispatchers.IO) {
-                delay(3000L)
-                Log.d(tag, "Finished IO coroutine 2")
-            }
-            Log.d(tag, "start of runblocking")
-            delay(5000L)
-            Log.d(tag, "End of runblocking")
+            Log.d(tag, "Ending long running calculation")
         }
-        Log.d(tag, "After runblocking")
+
+//        runBlocking {
+//            delay(1000L)
+//            job.cancel()
+//            Log.d(tag, "Main thread is continuing..")
+//        }
     }
 
-
-    suspend fun doNetworkCall(): String {
-        delay(3000L)
-        return "This is the answer"
+    fun fib(n: Int): Long {
+        return if (n==0) 0
+        else if (n==1) 1
+        else fib(n-1)+fib(n-2)
     }
 }
